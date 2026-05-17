@@ -12,14 +12,7 @@ export default function MainLayout(): JSX.Element {
         minHeight: "100vh",
         position: "relative",
         overflow: "hidden",
-        background: `
-          linear-gradient(
-            135deg,
-            #F7FAFC 0%,
-            #EEF2FF 50%,
-            #F5F3FF 100%
-          )
-        `,
+       
       }}
     >
       {/* Background Gradient Blur */}
@@ -31,7 +24,6 @@ export default function MainLayout(): JSX.Element {
           width: 500,
           height: 500,
           borderRadius: "50%",
-          background: "rgba(139, 92, 246, 0.15)",
           filter: "blur(80px)",
           zIndex: 0,
         }}
@@ -45,7 +37,6 @@ export default function MainLayout(): JSX.Element {
           width: 450,
           height: 450,
           borderRadius: "50%",
-          background: "rgba(59, 130, 246, 0.12)",
           filter: "blur(80px)",
           zIndex: 0,
         }}

@@ -1,7 +1,4 @@
-import type { JSX, ReactNode } from "react";
-
-import { createContext, useMemo, useState } from "react";
-
+import { useMemo, type JSX, type ReactNode } from "react";
 import {
   createTheme,
   PaletteOptions,
@@ -9,16 +6,11 @@ import {
 } from "@mui/material/styles";
 
 import { CssBaseline } from "@mui/material";
+import { useAppSelector } from "@renderer/lib/redux/hooks";
 
 interface Props {
   children: ReactNode;
 }
-
-type ThemeMode = "light" | "dark";
-
-export const ColorModeContext = createContext({
-  toggleColorMode: () => {},
-});
 
 const lightPalette: PaletteOptions = {
   mode: "light",
@@ -97,7 +89,7 @@ const darkPalette: PaletteOptions = {
   divider: "#163047",
 };
 
-function createAppTheme(mode: ThemeMode) {
+function createAppTheme(mode: "dark" | "light") {
   const baseTheme = createTheme({
     direction: "rtl",
 
@@ -193,26 +185,14 @@ function createAppTheme(mode: ThemeMode) {
 }
 
 export default function ThemeProvider({ children }: Props): JSX.Element {
-  const [mode, setMode] = useState<ThemeMode>("light");
-
-  const colorMode = useMemo(
-    () => ({
-      toggleColorMode: () => {
-        setMode((prev) => (prev === "light" ? "dark" : "light"));
-      },
-    }),
-    [],
-  );
+  const { mode } = useAppSelector((state) => state.themeMode);
 
   const theme = useMemo(() => createAppTheme(mode), [mode]);
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <MuiThemeProvider theme={theme}>
-        <CssBaseline />
-
-        {children}
-      </MuiThemeProvider>
-    </ColorModeContext.Provider>
+    <MuiThemeProvider theme={theme}>
+      <CssBaseline />
+      {children}
+    </MuiThemeProvider>
   );
 }

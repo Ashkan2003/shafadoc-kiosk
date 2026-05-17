@@ -59,7 +59,6 @@ function HomeMenuItem({
           <Typography
             variant="h4"
             sx={{
-              color: "#4B5563",
               mb: 1,
               fontSize: {
                 xs: "1.5rem",
@@ -72,7 +71,7 @@ function HomeMenuItem({
 
           <Typography
             sx={{
-              color: "#6B7280",
+              color: "#aeb1b7",
               fontSize: {
                 xs: "1rem",
                 md: "1.4rem",
@@ -92,7 +91,6 @@ export default function HomePage(): JSX.Element {
     <Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "#F5F5F5",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -103,7 +101,6 @@ export default function HomePage(): JSX.Element {
         sx={{
           width: "100%",
           maxWidth: 1500,
-          backgroundColor: "#ECEFF1",
           borderRadius: 4,
           p: {
             xs: 2,

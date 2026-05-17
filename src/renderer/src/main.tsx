@@ -5,13 +5,16 @@ import { createRoot } from "react-dom/client";
 import AppRouter from "./router";
 import ThemeProvider from "./lib/utils/materialUi";
 import MaterialRTLProvider from "./lib/utils/muiRTL";
+import { StoreProvider } from "./lib/redux/storeProvider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <MaterialRTLProvider>
-      <ThemeProvider>
-        <AppRouter />
-      </ThemeProvider>
-    </MaterialRTLProvider>
+    <StoreProvider>
+      <MaterialRTLProvider>
+        <ThemeProvider>
+          <AppRouter />
+        </ThemeProvider>
+      </MaterialRTLProvider>
+    </StoreProvider>
   </StrictMode>,
 );
