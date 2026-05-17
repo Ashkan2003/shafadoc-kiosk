@@ -44,7 +44,6 @@ const SettingsPage = (): React.JSX.Element => {
         minHeight: "100vh",
         width: "100%",
         p: 4,
-        bgcolor: "background.default",
       }}
     >
       <Stack spacing={3}>
