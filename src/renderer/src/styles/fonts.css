@@ -1,15 +1,10 @@
 @font-face {
-  font-family: "YekanBakh";
-  src: url("../assets/fonts/YekanBakh-Regular.woff2") format("woff2");
-
-  font-weight: 400;
+  font-family: "IRANSans";
+  src: url("../assets/fonts/IRANSansFaNumMedium.ttf") format("truetype");
+  font-weight: 500;
   font-style: normal;
 }
 
-@font-face {
-  font-family: "YekanBakh";
-  src: url("../assets/fonts/YekanBakh-Bold.woff2") format("woff2");
-
-  font-weight: 700;
-  font-style: normal;
+body {
+  font-family: "IRANSans", sans-serif;
 }

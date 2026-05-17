@@ -102,7 +102,7 @@ function createAppTheme(mode: ThemeMode) {
     direction: "rtl",
 
     typography: {
-      fontFamily: "YekanBakh, sans-serif",
+      fontFamily: "IRANSans, sans-serif",
     },
 
     palette: mode === "dark" ? darkPalette : lightPalette,
