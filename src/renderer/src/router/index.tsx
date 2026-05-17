@@ -1,6 +1,6 @@
 import MainLayout from "@renderer/layouts/mainLayout";
-import DashboardPage from "@renderer/pages/dashboard";
-import PatientsPage from "@renderer/pages/patients";
+import HomePage from "@renderer/pages/home";
+import SettingsPage from "@renderer/pages/settings";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 
 const router = createHashRouter([
@@ -10,11 +10,11 @@ const router = createHashRouter([
     children: [
       {
         index: true,
-        element: <DashboardPage />,
+        element: <HomePage />,
       },
       {
         path: "patients",
-        element: <PatientsPage />,
+        element: <SettingsPage />,
       },
     ],
   },
