@@ -37,9 +37,6 @@ function HomeMenuItem({
       }}
     >
       <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
         spacing={2}
       >
         <Box
@@ -58,11 +55,9 @@ function HomeMenuItem({
           {icon}
         </Box>
 
-        <Box flex={1}>
+        <Box >
           <Typography
             variant="h4"
-            fontWeight={700}
-            textAlign="right"
             sx={{
               color: "#4B5563",
               mb: 1,
@@ -76,7 +71,6 @@ function HomeMenuItem({
           </Typography>
 
           <Typography
-            textAlign="right"
             sx={{
               color: "#6B7280",
               fontSize: {
