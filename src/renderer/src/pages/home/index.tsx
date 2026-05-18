@@ -162,10 +162,6 @@ function HomeMenuItem({
 }
 
 export default function HomePage(): JSX.Element {
-  const theme = useTheme();
-
-  const isDark = theme.palette.mode === "dark";
-
   return (
     <Box
       sx={{

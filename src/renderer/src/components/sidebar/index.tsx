@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 export default function Sidebar(): React.JSX.Element {
   return (
     <div>
-      <Link to="/">Dashboard</Link>
+      <Link to="/">خانه</Link>
 
       <br />
 
-      <Link to="/patients">Patients</Link>
+      <Link to="/patients">تنظیمات</Link>
     </div>
   );
 }
