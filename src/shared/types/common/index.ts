@@ -36,3 +36,8 @@ export type CenterType = {
     };
   };
 };
+
+export type KioskSettingsType = {
+  themeMode: "light" | "dark";
+  centerId: string;
+};

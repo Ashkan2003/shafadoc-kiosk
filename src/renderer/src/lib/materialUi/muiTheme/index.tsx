@@ -6,7 +6,7 @@ import {
 } from "@mui/material/styles";
 
 import { CssBaseline } from "@mui/material";
-import { useAppSelector } from "@renderer/lib/redux/hooks";
+import { useKioskSettings } from "@renderer/hooks/useKioskSettings";
 
 interface Props {
   children: ReactNode;
@@ -184,9 +184,11 @@ function createAppTheme(mode: "dark" | "light") {
   });
 }
 
-export default function ThemeProvider({ children }: Props): JSX.Element {
-  const { mode } = useAppSelector((state) => state.themeMode);
+export default function ThemeProvider({ children }: Props) {
+  const settings = useKioskSettings();
 
+  const mode = settings?.themeMode ?? "light";
+  console.log(mode, "wwwwwwwwwwwwwwwwwww");
   const theme = useMemo(() => createAppTheme(mode), [mode]);
 
   return (

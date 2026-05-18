@@ -27,40 +27,65 @@ import {
   SaveRounded,
   SettingsRounded,
 } from "@mui/icons-material";
-
-import { useDispatch, useSelector } from "react-redux";
-
-import { RootState } from "@renderer/lib/redux/store";
-
-import { setThemeMode } from "@renderer/lib/redux/slices/themeSlice";
-import { setCurrentCenterId } from "@renderer/lib/redux/slices/centerSlice";
-
+import { KioskSettingsType } from "src/shared/types/common";
 const SettingsPage = (): React.JSX.Element => {
   const theme = useTheme();
 
-  const dispatch = useDispatch();
+  const [isSaving, setIsSaving] = React.useState<boolean>(false);
 
-  const { mode } = useSelector((state: RootState) => state.themeMode);
+  const [settings, setSettings] = React.useState<KioskSettingsType>({
+    centerId: "",
+    themeMode: "light",
+  });
 
-  const { currentCenterId } = useSelector((state: RootState) => state.center);
-
-  const [centerId, setCenterId] = React.useState<string>(currentCenterId ?? "");
-
-  const isDarkMode = mode === "dark";
+  const isDarkMode = settings.themeMode === "dark";
 
   const handleToggleTheme = (
     event: React.ChangeEvent<HTMLInputElement>,
   ): void => {
-    dispatch(setThemeMode(event.target.checked ? "dark" : "light"));
+    setSettings((prev) => ({
+      ...prev,
+      themeMode: event.target.checked ? "dark" : "light",
+    }));
   };
 
-  const handleSaveSettings = (): void => {
-    dispatch(setCurrentCenterId(centerId));
+  const handleSaveSettings = async (): Promise<void> => {
+    try {
+      setIsSaving(true);
 
-    localStorage.setItem("centerId", centerId);
-
-    localStorage.setItem("themeMode", mode);
+      await window.electronAPI.settings.setKioskSettings(settings);
+    } catch (error) {
+      console.error("Failed to save kiosk settings:", error);
+    } finally {
+      setIsSaving(false);
+    }
   };
+
+  React.useEffect(() => {
+    let mounted = true;
+
+    const loadSettings = async () => {
+      try {
+        const kioskSettings =
+          await window.electronAPI.settings.getKioskSettings();
+
+        if (!mounted) return;
+
+        setSettings({
+          centerId: kioskSettings?.centerId ?? "",
+          themeMode: kioskSettings?.themeMode ?? "light",
+        });
+      } catch (error) {
+        console.error("Failed to load settings:", error);
+      }
+    };
+
+    void loadSettings();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <Box
@@ -75,11 +100,8 @@ const SettingsPage = (): React.JSX.Element => {
           elevation={0}
           sx={{
             borderRadius: 6,
-
             border: "1px solid",
-
             borderColor: "divider",
-
             overflow: "hidden",
 
             background: `linear-gradient(
@@ -91,11 +113,7 @@ const SettingsPage = (): React.JSX.Element => {
             backdropFilter: "blur(12px)",
           }}
         >
-          <CardContent
-            sx={{
-              p: 4,
-            }}
-          >
+          <CardContent sx={{ p: 4 }}>
             <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
               <Avatar
                 sx={{
@@ -140,11 +158,8 @@ const SettingsPage = (): React.JSX.Element => {
           elevation={0}
           sx={{
             borderRadius: 6,
-
             border: "1px solid",
-
             borderColor: "divider",
-
             overflow: "hidden",
 
             background: `linear-gradient(
@@ -156,11 +171,7 @@ const SettingsPage = (): React.JSX.Element => {
             backdropFilter: "blur(12px)",
           }}
         >
-          <CardContent
-            sx={{
-              p: 4,
-            }}
-          >
+          <CardContent sx={{ p: 4 }}>
             <Stack spacing={3}>
               {/* Section Header */}
               <Stack
@@ -200,13 +211,9 @@ const SettingsPage = (): React.JSX.Element => {
               <Box
                 sx={{
                   p: 3,
-
                   borderRadius: 4,
-
                   border: "1px solid",
-
                   borderColor: "divider",
-
                   bgcolor: "background.default",
                 }}
               >
@@ -215,6 +222,7 @@ const SettingsPage = (): React.JSX.Element => {
                   sx={{
                     alignItems: "center",
                     justifyContent: "space-between",
+
                     flexWrap: "wrap",
                     gap: 2,
                   }}
@@ -238,7 +246,9 @@ const SettingsPage = (): React.JSX.Element => {
                   <Stack
                     direction="row"
                     spacing={2}
-                    sx={{ alignItems: "center" }}
+                    sx={{
+                      alignItems: "center",
+                    }}
                   >
                     <Chip
                       color={isDarkMode ? "primary" : "default"}
@@ -269,11 +279,8 @@ const SettingsPage = (): React.JSX.Element => {
           elevation={0}
           sx={{
             borderRadius: 6,
-
             border: "1px solid",
-
             borderColor: "divider",
-
             overflow: "hidden",
 
             background: `linear-gradient(
@@ -285,14 +292,16 @@ const SettingsPage = (): React.JSX.Element => {
             backdropFilter: "blur(12px)",
           }}
         >
-          <CardContent
-            sx={{
-              p: 4,
-            }}
-          >
+          <CardContent sx={{ p: 4 }}>
             <Stack spacing={3}>
               {/* Section Header */}
-              <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  alignItems: "center",
+                }}
+              >
                 <Avatar
                   sx={{
                     bgcolor: "secondary.main",
@@ -324,47 +333,53 @@ const SettingsPage = (): React.JSX.Element => {
                 fullWidth
                 label="شناسه مرکز"
                 placeholder="مثال: 1001"
-                value={centerId}
+                value={settings.centerId}
                 onChange={(event) => {
-                  setCenterId(event.target.value);
+                  setSettings((prev) => ({
+                    ...prev,
+                    centerId: event.target.value,
+                  }));
                 }}
               />
-
-              {/* Save Button */}
-              <Box>
-                <Button
-                  variant="contained"
-                  size="large"
-                  startIcon={<SaveRounded />}
-                  onClick={handleSaveSettings}
-                  sx={{
-                    borderRadius: 3,
-
-                    px: 4,
-
-                    py: 1.2,
-
-                    fontWeight: 700,
-
-                    boxShadow: "none",
-
-                    background: `linear-gradient(
-                      135deg,
-                      ${theme.palette.primary.main},
-                      ${theme.palette.secondary.main}
-                    )`,
-
-                    "&:hover": {
-                      boxShadow: "none",
-                    },
-                  }}
-                >
-                  ذخیره تنظیمات
-                </Button>
-              </Box>
             </Stack>
           </CardContent>
         </Card>
+
+        {/* Global Save Button */}
+        <Box>
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<SaveRounded />}
+            onClick={() => {
+              void handleSaveSettings();
+            }}
+            disabled={isSaving}
+            sx={{
+              borderRadius: 3,
+
+              px: 4,
+
+              py: 1.2,
+
+              fontWeight: 700,
+
+              boxShadow: "none",
+
+              background: `linear-gradient(
+                135deg,
+                ${theme.palette.primary.main},
+                ${theme.palette.secondary.main}
+              )`,
+
+              "&:hover": {
+                boxShadow: "none",
+              },
+            }}
+          >
+            {isSaving ? "در حال ذخیره..." : "ذخیره تنظیمات"}
+          </Button>
+        </Box>
       </Stack>
     </Box>
   );

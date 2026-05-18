@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CenterType } from "@renderer/types/common";
+import { CenterType } from "src/shared/types/common";
 
 interface InitialState {
   currentCenter: CenterType | null;
