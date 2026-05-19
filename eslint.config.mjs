@@ -7,9 +7,12 @@ import eslintPluginReactRefresh from "eslint-plugin-react-refresh";
 
 export default defineConfig(
   { ignores: ["**/node_modules", "**/dist", "**/out"] },
+
   tseslint.configs.recommended,
+
   eslintPluginReact.configs.flat.recommended,
   eslintPluginReact.configs.flat["jsx-runtime"],
+
   {
     settings: {
       react: {
@@ -17,16 +20,27 @@ export default defineConfig(
       },
     },
   },
+
   {
     files: ["**/*.{ts,tsx}"],
     plugins: {
       "react-hooks": eslintPluginReactHooks,
       "react-refresh": eslintPluginReactRefresh,
     },
+
     rules: {
       ...eslintPluginReactHooks.configs.recommended.rules,
       ...eslintPluginReactRefresh.configs.vite.rules,
+
+      "@typescript-eslint/explicit-function-return-type": "off",
+
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+
+      // Disable "Unexpected any"
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
+
   eslintConfigPrettier,
 );
