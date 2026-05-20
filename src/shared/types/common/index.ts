@@ -36,6 +36,45 @@ export type CenterType = {
     };
   };
 };
+export interface DoctorType {
+  id: string;
+  user_id: string;
+  first_name: string;
+  last_name: string;
+  full_name: string;
+  en_title: string;
+  gender: number; // e.g. 1 = male? (use enum if you know values)
+  email: string;
+  mobile: string;
+  national_code: string;
+  mcc: string;
+  type: number;
+  board_certification?: string | null;
+  bio: string | null;
+  education?: string | null;
+  degree?: string | null;
+  proficiency?: { label: string; id: number };
+  speciality?: { label: string; id: number };
+  fellowship?: { label: string; id: number };
+  proficiency_area?: string[] | null;
+  degree_location?: string | null;
+  languages?: string[]; // e.g. ["فارسی"] or JSON string
+  have_office?: boolean;
+  profile_picture?: string | null;
+  is_recommended?: boolean;
+  social: {
+    network: string;
+    link: string;
+    icon: string;
+  }[]; // ex : "[{\"network\":\"پشتیبانی\",\"link\":\"hasan\",\"icon\":\"اینستاگرام\"}]"
+  deleted_at?: string | null;
+  speciality_id?: number;
+  fellowship_id?: number;
+  proficiency_id?: number;
+  landline?: string;
+  status: "active" | "inactive";
+  approved: 0 | 1;
+}
 
 export type KioskSettingsType = {
   themeMode: "light" | "dark";
