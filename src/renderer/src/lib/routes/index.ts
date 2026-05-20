@@ -1,5 +1,6 @@
 export const Routes = {
   HOME: "/",
-  CENTER_DOCTORS: "centerDcotrs",
-  SETTINGS: "settings",
+  CENTER_DOCTORS: "/centerDoctors",
+  SETTINGS: "/settings",
+  DOCTOR_CALENDAR: "/doctorCalendar",
 };

@@ -7,6 +7,7 @@ import NotFoundPage from "@renderer/pages/notFound";
 import ErrorBoundary from "@renderer/components/ErrorBoundary";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import RouteErrorPage from "@renderer/components/ErrorBoundary/RouteErrorPage";
+import DoctorCalendar from "@renderer/pages/doctorCalendar";
 
 const router = createHashRouter([
   {
@@ -26,6 +27,10 @@ const router = createHashRouter([
       {
         path: Routes.CENTER_DOCTORS,
         element: <CenterDoctors />,
+      },
+      {
+        path: Routes.DOCTOR_CALENDAR,
+        element: <DoctorCalendar />,
       },
       {
         path: "*",

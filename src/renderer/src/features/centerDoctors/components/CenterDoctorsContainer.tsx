@@ -10,11 +10,13 @@ import {
 import { useGetCenterDoctorsQuery } from "../service/query";
 import DoctorCard from "./DoctorCard";
 import { KioskSettingsType } from "src/shared/types/common";
+import { useNavigate } from "react-router-dom";
+import { Routes } from "@renderer/lib/routes";
 
 export default function CenterDoctorsContainer() {
   const [centerId, setCenterId] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const getSettings = async () => {
       try {
@@ -38,11 +40,10 @@ export default function CenterDoctorsContainer() {
     error,
   } = useGetCenterDoctorsQuery(centerId);
 
-  const handleViewProfile = (doctorId: string) => {
-    console.log("View profile for doctor:", doctorId);
-  };
   console.log(doctors, "ooooooooooo");
   const handleBookAppointment = (doctorId: string) => {
+    navigate(Routes.DOCTOR_CALENDAR);
+
     console.log("Book appointment for doctor:", doctorId);
   };
 
@@ -97,7 +98,6 @@ export default function CenterDoctorsContainer() {
         <DoctorCard
           key={doctor.id}
           doctor={doctor}
-          onViewProfile={() => handleViewProfile(doctor.id)}
           onBookAppointment={() => handleBookAppointment(doctor.id)}
           hasAppointment={doctor.is_recommended || false}
         />

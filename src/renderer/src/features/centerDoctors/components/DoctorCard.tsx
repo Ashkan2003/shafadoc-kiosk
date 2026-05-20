@@ -20,14 +20,12 @@ import { DoctorType } from "src/shared/types/common";
 
 interface DoctorCardProps {
   doctor: DoctorType;
-  onViewProfile?: () => void;
   onBookAppointment?: () => void;
   hasAppointment?: boolean;
 }
 
 function DoctorCard({
   doctor,
-  onViewProfile,
   onBookAppointment,
   hasAppointment = false,
 }: DoctorCardProps) {
@@ -163,7 +161,6 @@ function DoctorCard({
           variant="outlined"
           size="small"
           color="warning"
-          onClick={onViewProfile}
           sx={{ borderRadius: 1 }}
         >
           مشاهده پروفایل

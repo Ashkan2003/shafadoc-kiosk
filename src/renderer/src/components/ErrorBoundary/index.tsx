@@ -64,7 +64,6 @@ function AppErrorFallback({
         bgcolor: "background.paper",
         gap: 2,
         px: 2,
-        textAlign: "center",
       }}
     >
       <Typography variant="h4" color="error">
