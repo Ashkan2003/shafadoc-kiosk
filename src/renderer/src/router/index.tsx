@@ -6,16 +6,14 @@ import SettingsPage from "@renderer/pages/settings";
 import NotFoundPage from "@renderer/pages/notFound";
 import ErrorBoundary from "@renderer/components/ErrorBoundary";
 import { createHashRouter, RouterProvider } from "react-router-dom";
+import RouteErrorPage from "@renderer/components/ErrorBoundary/RouteErrorPage";
 
 const router = createHashRouter([
   {
     path: "/",
     element: <MainLayout />,
-    errorElement: (
-      <ErrorBoundary>
-        <MainLayout />
-      </ErrorBoundary>
-    ),
+    errorElement: <RouteErrorPage />,
+
     children: [
       {
         index: true,

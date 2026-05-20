@@ -1,7 +1,5 @@
 import React, { Component, ReactNode } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { Routes } from "@renderer/lib/routes";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -13,35 +11,25 @@ interface ErrorBoundaryState {
   errorInfo: React.ErrorInfo | null;
 }
 
-class ErrorBoundaryComponent extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = {
-      hasError: false,
-      error: null,
-      errorInfo: null,
-    };
+    this.state = { hasError: false, error: null, errorInfo: null };
   }
 
   static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
-    return { hasError: true };
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    this.setState({
-      error,
-      errorInfo,
-    });
-    console.error("Error caught by boundary:", error, errorInfo);
+    this.setState({ error, errorInfo });
+    console.error("ErrorBoundary caught:", error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <ErrorFallback
+        <AppErrorFallback
           error={this.state.error}
           onReset={() =>
             this.setState({ hasError: false, error: null, errorInfo: null })
@@ -49,20 +37,22 @@ class ErrorBoundaryComponent extends Component<
         />
       );
     }
-
     return this.props.children;
   }
 }
 
-function ErrorFallback({
+/**
+ * Top-level fallback — lives OUTSIDE the router.
+ * Must NOT use any React Router hooks (useNavigate, useLocation, etc.)
+ * Uses window.location directly instead.
+ */
+function AppErrorFallback({
   error,
   onReset,
 }: {
   error: Error | null;
   onReset: () => void;
 }) {
-  const navigate = useNavigate();
-
   return (
     <Box
       sx={{
@@ -83,6 +73,7 @@ function ErrorFallback({
       <Typography variant="body1" color="text.secondary">
         متاسفیم! مشکلی در بارگذاری صفحه پیش آمد.
       </Typography>
+
       <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
         <Button variant="contained" color="info" onClick={onReset}>
           دوباره تلاش کن
@@ -90,11 +81,16 @@ function ErrorFallback({
         <Button
           variant="outlined"
           color="info"
-          onClick={() => navigate(Routes.HOME)}
+          onClick={() => {
+            // Safe to use window.location — no router context needed
+            window.location.hash = "/";
+            onReset();
+          }}
         >
           بازگشت به خانه
         </Button>
       </Box>
+
       {error && (
         <Typography
           sx={{
@@ -112,4 +108,4 @@ function ErrorFallback({
   );
 }
 
-export default ErrorBoundaryComponent;
+export default ErrorBoundary;
