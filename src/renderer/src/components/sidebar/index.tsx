@@ -1,13 +1,14 @@
+import { Routes } from "@renderer/lib/routes";
 import { Link } from "react-router-dom";
 
 export default function Sidebar(): React.JSX.Element {
   return (
     <div>
-      <Link to="/">خانه</Link>
+      <Link to={Routes.HOME}>خانه</Link>
 
       <br />
 
-      <Link to="/patients">تنظیمات</Link>
+      <Link to={Routes.SETTINGS}>تنظیمات</Link>
     </div>
   );
 }

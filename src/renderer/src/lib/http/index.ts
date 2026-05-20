@@ -1,11 +1,7 @@
 import axios from "axios";
 
-// ============================================================================
-// AXIOS INSTANCE
-// ============================================================================
-
 const http = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: false,
   headers: {
     Accept: "application/json",
@@ -13,10 +9,6 @@ const http = axios.create({
     Local: "fa",
   },
 });
-
-// ============================================================================
-// RESPONSE INTERCEPTOR - Logging
-// ============================================================================
 
 http.interceptors.response.use(
   (res) => {
