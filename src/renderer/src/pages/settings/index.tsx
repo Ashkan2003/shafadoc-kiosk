@@ -120,11 +120,7 @@ const SettingsPage = (): React.JSX.Element => {
                   width: 72,
                   height: 72,
 
-                  background: `linear-gradient(
-                    135deg,
-                    ${theme.palette.primary.main},
-                    ${theme.palette.secondary.main}
-                  )`,
+                  bgcolor: "yellowgreen",
                 }}
               >
                 <SettingsRounded
@@ -183,7 +179,7 @@ const SettingsPage = (): React.JSX.Element => {
               >
                 <Avatar
                   sx={{
-                    bgcolor: "secondary.main",
+                    bgcolor: "yellowgreen",
                   }}
                 >
                   <PaletteRounded />
@@ -304,7 +300,7 @@ const SettingsPage = (): React.JSX.Element => {
               >
                 <Avatar
                   sx={{
-                    bgcolor: "secondary.main",
+                    bgcolor: "yellowgreen",
                   }}
                 >
                   <ApartmentRounded />

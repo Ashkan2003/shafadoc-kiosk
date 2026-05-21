@@ -13,7 +13,7 @@ import { KioskSettingsType } from "src/shared/types/common";
 import { useNavigate } from "react-router-dom";
 import { Routes } from "@renderer/lib/routes";
 
-export default function CenterDoctorsContainer() {
+export default function DoctorsContainer() {
   const [centerId, setCenterId] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ export default function CenterDoctorsContainer() {
 
   console.log(doctors, "ooooooooooo");
   const handleBookAppointment = (doctorId: string) => {
-    navigate(Routes.DOCTOR_CALENDAR);
+    navigate(`${Routes.DOCTOR_CALENDAR}/${doctorId}`);
 
     console.log("Book appointment for doctor:", doctorId);
   };
