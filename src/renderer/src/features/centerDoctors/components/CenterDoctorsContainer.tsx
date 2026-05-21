@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   Container,
   CircularProgress,
@@ -9,36 +8,20 @@ import {
 } from "@mui/material";
 import { useGetCenterDoctorsQuery } from "../service/query";
 import DoctorCard from "./DoctorCard";
-import { KioskSettingsType } from "src/shared/types/common";
 import { useNavigate } from "react-router-dom";
 import { Routes } from "@renderer/lib/routes";
+import { useAppSelector } from "@renderer/lib/redux/hooks";
+import FullPageSpinner from "@renderer/components/fullPageSpinner";
+import CustomError from "@renderer/components/customError";
 
 export default function DoctorsContainer() {
-  const [centerId, setCenterId] = useState<string | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(true);
+  const settings = useAppSelector((state) => state.settings.data);
   const navigate = useNavigate();
-  useEffect(() => {
-    const getSettings = async () => {
-      try {
-        const settings = (await window.electron.ipcRenderer.invoke(
-          "settings:get-kiosk-settings",
-        )) as KioskSettingsType;
-        setCenterId(settings?.centerId);
-      } catch (error) {
-        console.error("Failed to get kiosk settings:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getSettings();
-  }, []);
-
   const {
     data: doctors,
     isLoading: isLoadingDoctors,
     error,
-  } = useGetCenterDoctorsQuery(centerId);
+  } = useGetCenterDoctorsQuery(settings?.centerId);
 
   console.log(doctors, "ooooooooooo");
   const handleBookAppointment = (doctorId: string) => {
@@ -47,46 +30,19 @@ export default function DoctorsContainer() {
     console.log("Book appointment for doctor:", doctorId);
   };
 
-  if (isLoading || isLoadingDoctors) {
-    return (
-      <Container>
-        <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-          <CircularProgress color="warning" />
-        </Box>
-      </Container>
-    );
+  if (isLoadingDoctors) {
+    return <FullPageSpinner />;
   }
 
   if (error) {
-    return (
-      <Container>
-        <Alert severity="error" sx={{ mt: 2 }}>
-          خطا در دریافت لیست پزشکان مرکز
-        </Alert>
-      </Container>
-    );
+    return <CustomError title="شناسه مرکز یافت نشد" />;
   }
-
-  if (!centerId) {
-    return (
-      <Container>
-        <Alert severity="warning" sx={{ mt: 2 }}>
-          شناسه مرکز مشخص نشده است
-        </Alert>
-      </Container>
-    );
+  if (!settings?.centerId) {
+    return <CustomError title="شناسه مرکز یافت نشد" />;
   }
 
   if (!doctors || doctors.length === 0) {
-    return (
-      <Container>
-        <Box sx={{ textAlign: "center", py: 4 }}>
-          <Typography variant="h6" color="textSecondary">
-            هیچ پزشکی برای این مرکز یافت نشد
-          </Typography>
-        </Box>
-      </Container>
-    );
+    return <CustomError title=" هیچ پزشکی برای این مرکز یافت نشد" />;
   }
 
   return (

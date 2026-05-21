@@ -6,14 +6,14 @@ export function useCenterDoctorAppointmentQuery({
   centerId,
   doctorId,
 }: {
-  centerId: string;
-  doctorId: string;
+  centerId: string | undefined;
+  doctorId: string | undefined;
 }) {
   return useQueryWithHandlers({
     queryFn: () =>
       getCenterDoctorAppointmentsApi({
-        centerId: centerId,
-        doctorId: doctorId,
+        centerId: centerId!,
+        doctorId: doctorId!,
       }),
     refetchInterval: 1000 * 10, // 10 second
     queryKey: ["doctor-appointments", centerId, doctorId],

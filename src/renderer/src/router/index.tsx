@@ -4,9 +4,9 @@ import CenterDoctors from "@renderer/pages/doctorsPage";
 import HomePage from "@renderer/pages/home";
 import SettingsPage from "@renderer/pages/settings";
 import NotFoundPage from "@renderer/pages/notFound";
-import ErrorBoundary from "@renderer/components/ErrorBoundary";
+import ErrorBoundary from "@renderer/lib/providers/ErrorBoundary";
 import { createHashRouter, RouterProvider } from "react-router-dom";
-import RouteErrorPage from "@renderer/components/ErrorBoundary/RouteErrorPage";
+import RouteErrorPage from "@renderer/lib/providers/ErrorBoundary/RouteErrorPage";
 import DoctorCalendar from "@renderer/pages/doctorCalendarPage";
 import DoctorCalendarPage from "@renderer/pages/doctorCalendarPage";
 
