@@ -7,12 +7,7 @@ import CustomError from "@renderer/components/customError";
 const DoctorCalendarContainer = () => {
   const { id } = useParams();
   const settings = useAppSelector((state) => state.settings.data);
-  const {
-    data: doctorCalendarData,
-    isLoading,
-    isError,
-    error,
-  } = useCenterDoctorAppointmentQuery({
+  const { data, isLoading, isError, error } = useCenterDoctorAppointmentQuery({
     doctorId: id,
     centerId: settings?.centerId,
   });

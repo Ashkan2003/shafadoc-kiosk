@@ -80,3 +80,50 @@ export type KioskSettingsType = {
   themeMode: "light" | "dark";
   centerId: string;
 };
+
+export interface CalendarAppointmentType {
+  id: string;
+  center_id: string;
+  doctor_id: string;
+  service_id: string;
+  date: string; // ISO date string, e.g. "2025-11-26"
+  start_time: string; // "HH:mm"
+  end_time: string; // "HH:mm"
+  status: number;
+  split_times: string;
+  service_type: string;
+  description: string | null;
+  reserve_types: string;
+  times: string;
+  created_at: string; // ISO datetime
+  updated_at: string; // ISO datetime
+  start_date: string;
+  end_date: string;
+  service_info: AppointmentServiceInfoType;
+  reservation_stats: AppointmentReservationStatsType;
+  times_status: AppointmentTimeStatusType[];
+}
+
+export interface AppointmentServiceInfoType {
+  id: string;
+  name: string;
+  price: string;
+  desc: string;
+}
+export interface AppointmentReservationStatsType {
+  online_capacity: number;
+  reserved_count: number;
+  pending_count: number;
+  confirmed_count: number;
+  remaining_capacity: number;
+  is_available: boolean;
+}
+
+export interface AppointmentTimeStatusType {
+  appointment_id: string;
+  time: string; // "HH:mm"
+  status: "AVAILABLE" | "PENDING";
+  reserved_count: number;
+  pending_count: number;
+  is_available: boolean;
+}
