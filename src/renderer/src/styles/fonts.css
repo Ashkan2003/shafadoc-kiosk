@@ -8,6 +8,10 @@
 body {
   font-family: "IRANSans", sans-serif;
 }
+/* Use your font variable */
+[data-sonner-toast] {
+  font-family: "IRANSans" !important;
+}
 
 /* ------------ styling scrollBar-scroll---------------- */
 :root {

@@ -7,8 +7,7 @@ import {
   setSelectedAppointmentDetail,
   setStep,
 } from "@renderer/lib/redux/slices/reservationSlice";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+
 import {
   alpha,
   Box,
@@ -27,8 +26,11 @@ import { getCombinedAppointmentsByDate } from "../../utils/calendarUi";
 import { useCalendar } from "../../hooks/useCalendar";
 import { CalendarBody } from "../doctorCalendarBody";
 import { CalendarFooter } from "../doctorCalendarFooter";
+import DoctorCalendarHeader from "../doctorCalendarHeader";
 
 const DoctorCalendarContainer = () => {
+  const targetRef = useRef<HTMLDivElement | null>(null);
+
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
 
@@ -44,24 +46,7 @@ const DoctorCalendarContainer = () => {
     dispatch(setStep(2));
   }, [dispatch]);
 
-  // if (isLoading) {
-  //   return <FullPageSpinner />;
-  // }
-
-  // if (error || !settings?.centerId) {
-  //   return <CustomError title="شناسه مرکز یافت نشد" />;
-  // }
-
-  const combinedAppointmentsByDate = getCombinedAppointmentsByDate(data);
-  console.log(data, "calendarAppointments");
-  console.log(combinedAppointmentsByDate, "combinedAppointmentsByDate");
-  const [isInitialized, setIsInitialized] = useState(false);
   useEffect(() => {
-    // if you only want to init once:
-    if (isInitialized || isLoading) return; // i done this for fixing the redux-state going back to initial state issue
-    dispatch(setInitialAppointments(data.appointments));
-    dispatch(setCalendarData(combinedAppointmentsByDate));
-    //
     dispatch(
       setSelectedAppointmentDetail({
         selectedAppointment: null,
@@ -75,19 +60,20 @@ const DoctorCalendarContainer = () => {
         },
       }),
     );
-    setIsInitialized(true); // only after all dispatches
-  }, [data, combinedAppointmentsByDate, dispatch, isInitialized, isLoading]);
+  }, [dispatch]);
 
-  const {
-    setCurrMonth,
-    currMonth,
-    daysInMonth,
-    isSameMonth,
-    getNextMonth,
-    getPrevMonth,
-    firstEmptyDate,
-  } = useCalendar({ calendardata: combinedAppointmentsByDate });
-  const targetRef = useRef<HTMLDivElement | null>(null);
+  if (isLoading) {
+    return <FullPageSpinner />;
+  }
+
+  if (error || !settings?.centerId) {
+    return <CustomError title="شناسه مرکز یافت نشد" />;
+  }
+
+  const calendarData = getCombinedAppointmentsByDate(data?.appointments);
+  console.log(data, "calendarAppointments");
+  console.log(calendarData, "combinedAppointmentsByDate");
+
   const onScrollToTimes = () => {
     targetRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -96,9 +82,6 @@ const DoctorCalendarContainer = () => {
       inline: "end",
     });
   };
-  if (isLoading) {
-    return <FullPageSpinner />;
-  }
 
   return (
     <Card
@@ -121,45 +104,13 @@ const DoctorCalendarContainer = () => {
       }}
     >
       {/* header */}
-      <Stack sx={{ p: { xs: 2, md: 3 }, gap: 2.5 }}>
-        <Stack
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Button
-            color="warning"
-            startIcon={<ArrowForwardIcon />}
-            sx={{ fontSize: 24 }}
-            onClick={(e) => getPrevMonth(e)}
-            disabled={isSameMonth}
-          >
-            ماه قبل
-          </Button>
-          <Typography sx={{ fontWeight: 700, fontSize: 32 }}>
-            {currMonth}
-          </Typography>
-          <Button
-            color="warning"
-            endIcon={<ArrowBackIcon />}
-            sx={{ fontSize: 24 }}
-            onClick={(e) => getNextMonth(e)}
-          >
-            ماه بعد
-          </Button>
-        </Stack>
-      </Stack>
+      <DoctorCalendarHeader calendarData={calendarData} />
       <CalendarBody
-        daysInMonth={daysInMonth}
-        setCurrMonth={setCurrMonth}
+        calendarData={calendarData}
         onScrollToTimes={onScrollToTimes}
-        defaultDate={firstEmptyDate}
       />
 
-      <CalendarFooter targetRef={targetRef} />
+      <CalendarFooter targetRef={targetRef} initialAppointments={data} />
     </Card>
   );
 };

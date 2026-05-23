@@ -13,13 +13,13 @@ import { CombinedAppointmentsByDateType } from "src/shared/types/common";
 import { getFirstEmptyAppointment } from "../../utils/calendarUi";
 
 export function useCalendar({
-  calendardata,
+  calendarData,
 }: {
-  calendardata: CombinedAppointmentsByDateType[] | null;
+  calendarData: CombinedAppointmentsByDateType[] | null;
 }) {
   const today = startOfToday();
   const { numDate } = getFirstEmptyAppointment({
-    appointments: calendardata,
+    appointments: calendarData,
   });
   const [currMonth, setCurrMonth] = useState(() =>
     format(new Date(numDate!), "MMMM-yyyy"),

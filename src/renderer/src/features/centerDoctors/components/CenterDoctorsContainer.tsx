@@ -63,7 +63,6 @@ export default function DoctorsContainer() {
           key={doctor.id}
           doctor={doctor}
           onBookAppointment={() => handleBookAppointment(doctor)}
-          hasAppointment={doctor.is_recommended || false}
         />
       ))}
     </Stack>

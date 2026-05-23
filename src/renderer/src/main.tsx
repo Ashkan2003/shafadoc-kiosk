@@ -21,6 +21,7 @@ createRoot(document.getElementById("root")!).render(
                 <AppRouter />
                 <Toaster
                   richColors
+                  dir="rtl"
                   position="top-center"
                   closeButton
                   duration={4000}

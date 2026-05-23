@@ -3,13 +3,18 @@ import { useAppDispatch, useAppSelector } from "@renderer/lib/redux/hooks";
 import { setSelectedAppointmentDetail } from "@renderer/lib/redux/slices/reservationSlice";
 import { RootState } from "@renderer/lib/redux/store";
 import { toast } from "sonner";
+import { CalendarAppointmentType } from "src/shared/types/common";
 
 interface CalendarFooterProps {
   targetRef: any;
+  initialAppointments: CalendarAppointmentType[];
 }
 
-const CalendarFooter = ({ targetRef }: CalendarFooterProps) => {
-  const { selectedAppointmentDetail, initialAppointments } = useAppSelector(
+const CalendarFooter = ({
+  targetRef,
+  initialAppointments,
+}: CalendarFooterProps) => {
+  const { selectedAppointmentDetail } = useAppSelector(
     (state: RootState) => state.reservation,
   );
   const dispatch = useAppDispatch();
@@ -44,10 +49,11 @@ const CalendarFooter = ({ targetRef }: CalendarFooterProps) => {
         p: 2.5,
         justifyContent: "center",
       }}
+      ref={targetRef}
     >
       {sortedTimes !== null ? (
-        <div ref={targetRef}>
-          {sortedTimes.map((item: any, index: number) => {
+        <>
+          {sortedTimes.map((item, index: number) => {
             const isReserved =
               !item.is_available || item.status !== "AVAILABLE";
 
@@ -64,15 +70,15 @@ const CalendarFooter = ({ targetRef }: CalendarFooterProps) => {
                       setSelectedAppointmentDetail({
                         selectedService: matchedAppointment?.service_info,
                         selectedAppointment: matchedAppointment,
-                        selectedTime: item,
+                        selectedTime: item.time,
                       }),
                     );
                   } else {
                     toast.error("این ساعت رزرو شده است");
                   }
                 }}
-                key={item}
-                label={item}
+                key={index}
+                label={item.time}
                 sx={{
                   minWidth: 110,
                   py: 2.5,
@@ -85,7 +91,7 @@ const CalendarFooter = ({ targetRef }: CalendarFooterProps) => {
               />
             );
           })}
-        </div>
+        </>
       ) : (
         <div className=" flex  items-center justify-center">
           لطفا روز را انتخاب کنید

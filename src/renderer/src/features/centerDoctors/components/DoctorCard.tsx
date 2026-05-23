@@ -21,14 +21,9 @@ import { DoctorType } from "src/shared/types/common";
 interface DoctorCardProps {
   doctor: DoctorType;
   onBookAppointment?: () => void;
-  hasAppointment?: boolean;
 }
 
-function DoctorCard({
-  doctor,
-  onBookAppointment,
-  hasAppointment = false,
-}: DoctorCardProps) {
+function DoctorCard({ doctor, onBookAppointment }: DoctorCardProps) {
   const specialityLabel = doctor.speciality?.label || doctor.fellowship?.label;
   const proficiencyAreas = doctor.proficiency_area || [];
   const theme = useTheme();
@@ -142,9 +137,7 @@ function DoctorCard({
           <Typography
             variant="body2"
             sx={{ color: "#1976D2", fontWeight: "500" }}
-          >
-            {hasAppointment ? "موجود است" : "موجود نیست"}
-          </Typography>
+          ></Typography>
         </Box>
       </CardContent>
 
@@ -170,10 +163,9 @@ function DoctorCard({
           size="small"
           color="warning"
           onClick={onBookAppointment}
-          disabled={!hasAppointment}
           sx={{ borderRadius: 1 }}
         >
-          {hasAppointment ? "نوبت بگیرید" : "بدون نوبت"}
+          نوبت بگیرید
         </Button>
       </CardActions>
     </Card>

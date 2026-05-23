@@ -1,11 +1,5 @@
 import { format, getDate, isSameDay, parse } from "date-fns-jalali";
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { RootState } from "@renderer/lib/redux/store";
 import { CombinedAppointmentsByDateType } from "src/shared/types/common";
 import {
@@ -16,30 +10,27 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useAppDispatch, useAppSelector } from "@renderer/lib/redux/hooks";
 import { setSelectedAppointmentDetail } from "@renderer/lib/redux/slices/reservationSlice";
 import { toast } from "sonner";
 import { goToSelectedDaySlide } from "../../utils/calendarUi";
+import { useCalendar } from "../../hooks/useCalendar";
+import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
+import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 interface CalendarBodyProps {
-  daysInMonth: Date[];
+  calendarData: CombinedAppointmentsByDateType[];
   isLoading?: boolean;
-  defaultDate: Date;
   onScrollToTimes: () => void;
-  setCurrMonth: Dispatch<SetStateAction<string>>;
 }
 
-const CalendarBody = ({
-  daysInMonth,
-  defaultDate,
-  onScrollToTimes,
-  setCurrMonth,
-}: CalendarBodyProps) => {
+const CalendarBody = ({ calendarData, onScrollToTimes }: CalendarBodyProps) => {
+  const { setCurrMonth, daysInMonth, firstEmptyDate } = useCalendar({
+    calendarData,
+  });
   const carouselRef = useRef<any>(null);
   const dispatch = useAppDispatch();
 
-  const { calendarData, selectedAppointmentDetail } = useAppSelector(
+  const { selectedAppointmentDetail } = useAppSelector(
     (state: RootState) => state.reservation,
   );
 
@@ -82,17 +73,17 @@ const CalendarBody = ({
   // this is for auto selection of the first empty date in the initial page rendering
   useEffect(() => {
     if (!selectedAppointmentDetail.selectedDay) {
-      handleSelect(defaultDate);
+      handleSelect(firstEmptyDate);
     }
-  }, [defaultDate, handleSelect, selectedAppointmentDetail.selectedDay]);
+  }, [firstEmptyDate, handleSelect, selectedAppointmentDetail.selectedDay]);
   // this is for auto scroll carousel to the first empty date in the page initial rendering
   useEffect(() => {
     const gregorianDate = new Date(selectedAppointmentDetail?.selectedDay!);
     goToSelectedDaySlide(gregorianDate, carouselRef, daysInMonth);
-  }, [daysInMonth, defaultDate, selectedAppointmentDetail.selectedDay]);
+  }, [daysInMonth, firstEmptyDate, selectedAppointmentDetail.selectedDay]);
 
   const goToFirstemptyDaySide = () => {
-    handleSelect(defaultDate);
+    handleSelect(firstEmptyDate);
     if (selectedAppointmentDetail.selectedDay) {
       setCurrMonth(
         format(new Date(selectedAppointmentDetail.selectedDay), "MMMM-yyyy"),
@@ -118,7 +109,7 @@ const CalendarBody = ({
         }}
       >
         <IconButton>
-          <ArrowForwardIcon />
+          <ArrowForwardIosRoundedIcon />
         </IconButton>
 
         <Stack
@@ -161,15 +152,15 @@ const CalendarBody = ({
                   borderRadius: 3,
                   border: "1px solid",
                   borderColor: isSelected ? "warning.light" : "info.main",
-                  bgcolor: isSelected ? "#012ef484" : "background.paper",
-                  cursor: "pointer",
+                  bgcolor: isSelected ? "info.dark" : "background.paper",
+                  cursor: isActive ? "pointer" : "auto",
                   textAlign: "center",
                 }}
               >
                 <Typography
                   sx={{
                     fontWeight: 600,
-                    color: isActive ? "error.light" : "text.primary",
+                    color: isActive ? "text.primary" : "error.light",
                   }}
                 >
                   {format(day, "EEEE")}
@@ -179,7 +170,7 @@ const CalendarBody = ({
                     mt: 1,
                     fontWeight: 700,
                     fontSize: 34,
-                    color: isActive ? "error.light" : "background",
+                    color: isActive ? "text.primary" : "error.light",
                   }}
                 >
                   {getDate(day)}
@@ -187,11 +178,11 @@ const CalendarBody = ({
                 <Typography
                   sx={{
                     mt: 1,
-                    color: isActive ? "error.light" : "text.secondary",
+                    color: isActive ? "text.primary" : "error.light",
                     fontSize: 20,
                   }}
                 >
-                  {isActive ? emptyCount + " " + `نوبت خالی` : ` روز غیر کاری`}
+                  {isActive ? emptyCount + " " + `نوبت خالی` : `موجود نیست`}
                 </Typography>
               </Card>
             );
@@ -199,7 +190,7 @@ const CalendarBody = ({
         </Stack>
 
         <IconButton>
-          <ArrowBackIcon />
+          <ArrowBackIosNewRoundedIcon />
         </IconButton>
       </Stack>
 

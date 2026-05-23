@@ -15,6 +15,7 @@ export const getCombinedAppointmentsByDate = (
   appointments: CalendarAppointmentType[],
 ): CombinedAppointmentsByDateType[] => {
   if (!Array.isArray(appointments) || appointments.length === 0) {
+    console.log(appointments, "oooooooooooooooooooooooooo");
     return [];
   }
 

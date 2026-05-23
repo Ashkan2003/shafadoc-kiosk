@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
-
+import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 interface BackBtnProps {
   label?: string;
   to?: string;
@@ -26,7 +26,7 @@ export default function BackBtn({ label = "Back", to, onClick }: BackBtnProps) {
       variant="text"
       onClick={handleClick}
       color="warning"
-      startIcon={<ArrowBackIosNewRoundedIcon />}
+      startIcon={<ArrowForwardIosRoundedIcon />}
       sx={{
         // color: "text.secondary",
         fontWeight: 500,
