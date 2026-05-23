@@ -1,11 +1,13 @@
-import { Chip, Stack } from "@mui/material";
+import { Chip, Stack, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@renderer/lib/redux/hooks";
 import {
   setSelectedAppointmentDetail,
   setStep,
 } from "@renderer/lib/redux/slices/reservationSlice";
 import { RootState } from "@renderer/lib/redux/store";
+import { Routes } from "@renderer/lib/routes";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { CalendarAppointmentType } from "src/shared/types/common";
 
 interface CalendarFooterProps {
@@ -21,20 +23,16 @@ const CalendarFooter = ({
     (state: RootState) => state.reservation,
   );
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  // Function to convert time string to minutes since midnight for sorting
   const timeToMinutes = (timeString: string): number => {
-    // Handle time range format: "16:00 - 17:10" -> extract "16:00"
     const startTime = timeString.includes(" - ")
       ? timeString.split(" - ")[0].trim()
       : timeString.trim();
-
-    // Parse HH:mm format
     const [hours, minutes] = startTime.split(":").map(Number);
     return hours * 60 + minutes;
   };
 
-  // Sort times from 00:00 to 23:59
   const sortedTimes = selectedAppointmentDetail?.selectedDayTimes
     ? [...selectedAppointmentDetail.selectedDayTimes].sort((a, b) => {
         const timeA = timeToMinutes(a.time || "");
@@ -42,10 +40,10 @@ const CalendarFooter = ({
         return timeA - timeB;
       })
     : null;
+
   return (
     <Stack
       sx={{
-        display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
         gap: 1.5,
@@ -65,10 +63,10 @@ const CalendarFooter = ({
                 onClick={() => {
                   if (!isReserved) {
                     const matchedAppointment = initialAppointments?.find(
-                      (appointment: any) => {
-                        return appointment.id == item?.appointment_id;
-                      },
+                      (appointment: any) =>
+                        appointment.id == item?.appointment_id,
                     );
+
                     dispatch(
                       setSelectedAppointmentDetail({
                         selectedService: matchedAppointment?.service_info,
@@ -76,7 +74,9 @@ const CalendarFooter = ({
                         selectedTime: item.time,
                       }),
                     );
+
                     dispatch(setStep(3));
+                    navigate(Routes.REVIEW);
                   } else {
                     toast.error("این ساعت رزرو شده است");
                   }
@@ -88,18 +88,29 @@ const CalendarFooter = ({
                   py: 2.5,
                   fontSize: 28,
                   borderRadius: 999,
-                  border: "1px solid #00C45A",
-                  color: "#00B050",
+                  border: "1px solid",
+                  borderColor: isReserved ? "error.light" : "#00C45A",
+                  color: isReserved ? "error.light" : "#00B050",
                   bgcolor: "transparent",
+                  cursor: isReserved ? "not-allowed" : "pointer",
+                  opacity: isReserved ? 0.5 : 1,
                 }}
               />
             );
           })}
         </>
       ) : (
-        <div className=" flex  items-center justify-center">
+        <Typography
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "text.secondary",
+            py: 3,
+          }}
+        >
           لطفا روز را انتخاب کنید
-        </div>
+        </Typography>
       )}
     </Stack>
   );

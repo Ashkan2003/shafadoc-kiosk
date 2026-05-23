@@ -119,14 +119,14 @@ export default function StepperLayout(): JSX.Element {
                         fontWeight: isActive ? 700 : 500,
                         fontSize: { xs: "0.78rem", md: "0.9rem" },
                         color: isActive
-                          ? "info.main"
+                          ? "info.light"
                           : isCompleted
                             ? "success.main"
                             : "text.disabled",
                         transition: "color 0.3s ease",
                       },
                       "& .MuiStepLabel-label.Mui-active": {
-                        color: "info.main",
+                        color: "info.light",
                       },
                       "& .MuiStepLabel-label.Mui-completed": {
                         color: "success.main",
@@ -137,7 +137,7 @@ export default function StepperLayout(): JSX.Element {
                         transition: "color 0.3s ease, transform 0.3s ease",
                       },
                       "& .MuiStepIcon-root.Mui-active": {
-                        color: "info.main",
+                        color: "info.light",
                         transform: "scale(1.15)",
                       },
                       "& .MuiStepIcon-root.Mui-completed": {
@@ -145,6 +145,7 @@ export default function StepperLayout(): JSX.Element {
                       },
                       "& .MuiStepIcon-text": {
                         fontFamily: "IRANSans, sans-serif",
+                        color: "AccentColorText",
                         fontSize: "0.7rem",
                         fontWeight: 700,
                       },

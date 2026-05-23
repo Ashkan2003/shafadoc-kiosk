@@ -135,7 +135,8 @@ const CalendarBody = ({ calendarData, onScrollToTimes }: CalendarBodyProps) => {
 
             const isActive = !isFullyBooked && isAvailable;
             return (
-              <Card
+              <Box
+                variant="outlined"
                 key={day.toISOString()}
                 onClick={() => {
                   if (isActive && emptyCount > 0) {
@@ -152,7 +153,8 @@ const CalendarBody = ({ calendarData, onScrollToTimes }: CalendarBodyProps) => {
                   borderRadius: 3,
                   border: "1px solid",
                   borderColor: isSelected ? "warning.light" : "info.main",
-                  bgcolor: isSelected ? "info.dark" : "background.paper",
+                  bgcolor: isSelected ? "info.light" : "background.paper",
+
                   cursor: isActive ? "pointer" : "auto",
                   textAlign: "center",
                 }}
@@ -160,7 +162,11 @@ const CalendarBody = ({ calendarData, onScrollToTimes }: CalendarBodyProps) => {
                 <Typography
                   sx={{
                     fontWeight: 600,
-                    color: isActive ? "text.primary" : "error.light",
+                    color: isSelected
+                      ? "info.contrastText"
+                      : isActive
+                        ? "text.primary"
+                        : "error.main",
                   }}
                 >
                   {format(day, "EEEE")}
@@ -170,7 +176,11 @@ const CalendarBody = ({ calendarData, onScrollToTimes }: CalendarBodyProps) => {
                     mt: 1,
                     fontWeight: 700,
                     fontSize: 34,
-                    color: isActive ? "text.primary" : "error.light",
+                    color: isSelected
+                      ? "info.contrastText"
+                      : isActive
+                        ? "text.primary"
+                        : "error.main",
                   }}
                 >
                   {getDate(day)}
@@ -178,13 +188,17 @@ const CalendarBody = ({ calendarData, onScrollToTimes }: CalendarBodyProps) => {
                 <Typography
                   sx={{
                     mt: 1,
-                    color: isActive ? "text.primary" : "error.light",
+                    color: isSelected
+                      ? "info.contrastText"
+                      : isActive
+                        ? "text.primary"
+                        : "error.main",
                     fontSize: 20,
                   }}
                 >
                   {isActive ? emptyCount + " " + `نوبت خالی` : `موجود نیست`}
                 </Typography>
-              </Card>
+              </Box>
             );
           })}
         </Stack>

@@ -69,8 +69,8 @@ const DoctorCalendarContainer = () => {
   if (error || !settings?.centerId) {
     return <CustomError title="شناسه مرکز یافت نشد" />;
   }
-
-  const calendarData = getCombinedAppointmentsByDate(data?.appointments);
+  const initialAppointments = data?.appointments;
+  const calendarData = getCombinedAppointmentsByDate(initialAppointments);
   console.log(data, "calendarAppointments");
   console.log(calendarData, "combinedAppointmentsByDate");
 
@@ -110,7 +110,10 @@ const DoctorCalendarContainer = () => {
         onScrollToTimes={onScrollToTimes}
       />
 
-      <CalendarFooter targetRef={targetRef} initialAppointments={data} />
+      <CalendarFooter
+        targetRef={targetRef}
+        initialAppointments={initialAppointments}
+      />
     </Card>
   );
 };
