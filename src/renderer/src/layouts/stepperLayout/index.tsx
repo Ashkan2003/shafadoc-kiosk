@@ -28,6 +28,10 @@ interface ReservationStep {
 const RESERVATION_STEPS: ReservationStep[] = [
   { label: "انتخاب پزشک", description: "پزشک مورد نظر خود را انتخاب کنید" },
   { label: "انتخاب نوبت", description: "زمان مناسب خود را رزرو کنید" },
+  {
+    label: "مرور اطلاعات",
+    description: "پزشک و نوبتی که انتخاب کردید را  مرور کنید",
+  },
 ];
 
 export default function StepperLayout(): JSX.Element {

@@ -1,6 +1,9 @@
 import { Chip, Stack } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@renderer/lib/redux/hooks";
-import { setSelectedAppointmentDetail } from "@renderer/lib/redux/slices/reservationSlice";
+import {
+  setSelectedAppointmentDetail,
+  setStep,
+} from "@renderer/lib/redux/slices/reservationSlice";
 import { RootState } from "@renderer/lib/redux/store";
 import { toast } from "sonner";
 import { CalendarAppointmentType } from "src/shared/types/common";
@@ -73,6 +76,7 @@ const CalendarFooter = ({
                         selectedTime: item.time,
                       }),
                     );
+                    dispatch(setStep(3));
                   } else {
                     toast.error("این ساعت رزرو شده است");
                   }

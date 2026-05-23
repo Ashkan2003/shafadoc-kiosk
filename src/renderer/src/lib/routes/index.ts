@@ -3,4 +3,5 @@ export const Routes = {
   CENTER_DOCTORS: "/centerDoctors",
   SETTINGS: "/settings",
   DOCTOR_CALENDAR: "/doctorCalendar",
+  REVIEW: "/review",
 };
