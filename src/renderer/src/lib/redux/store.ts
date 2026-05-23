@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import themeReducer from "../../lib/redux/slices/themeSlice";
-import centerReducer from "../../lib/redux/slices/centerSlice";
 import settingsReducer from "../../lib/redux/slices/settingsSlice";
+import reservationReducer from "../../lib/redux/slices/reservationSlice";
 export const makeStore = () => {
   return configureStore({
     reducer: {
       themeMode: themeReducer,
-      center: centerReducer,
       settings: settingsReducer,
+      reservation: reservationReducer,
     },
   });
 };

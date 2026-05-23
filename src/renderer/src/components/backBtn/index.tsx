@@ -25,9 +25,10 @@ export default function BackBtn({ label = "Back", to, onClick }: BackBtnProps) {
     <Button
       variant="text"
       onClick={handleClick}
+      color="warning"
       startIcon={<ArrowBackIosNewRoundedIcon />}
       sx={{
-        color: "text.secondary",
+        // color: "text.secondary",
         fontWeight: 500,
         fontSize: "0.875rem",
         textTransform: "none",
@@ -35,10 +36,10 @@ export default function BackBtn({ label = "Back", to, onClick }: BackBtnProps) {
         py: 0.75,
         borderRadius: 2,
         transition: "all 0.2s ease",
-        "&:hover": {
-          color: "primary.main",
-          backgroundColor: "action.hover",
-        },
+        // "&:hover": {
+        //   color: "primary.main",
+        //   backgroundColor: "action.hover",
+        // },
       }}
     >
       {label}

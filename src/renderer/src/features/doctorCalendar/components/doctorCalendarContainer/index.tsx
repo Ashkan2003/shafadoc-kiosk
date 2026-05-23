@@ -1,6 +1,7 @@
 import CustomError from "@renderer/components/customError";
 import FullPageSpinner from "@renderer/components/fullPageSpinner";
-import { useAppSelector } from "@renderer/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@renderer/lib/redux/hooks";
+import { setStep } from "@renderer/lib/redux/slices/reservationSlice";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import {
@@ -12,7 +13,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCenterDoctorAppointmentQuery } from "../../service/query";
 import {
@@ -25,7 +26,9 @@ import {
 
 const DoctorCalendarContainer = () => {
   const { id } = useParams();
+  const dispatch = useAppDispatch();
   const settings = useAppSelector((state) => state.settings.data);
+
   const { data, isLoading, error } = useCenterDoctorAppointmentQuery({
     doctorId: id,
     centerId: settings?.centerId,
@@ -33,6 +36,11 @@ const DoctorCalendarContainer = () => {
 
   const days = useMemo(() => extractCalendarDays(data), [data]);
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null);
+
+  // Always at step 2 when this page mounts
+  useEffect(() => {
+    dispatch(setStep(2));
+  }, [dispatch]);
 
   const selectedDay =
     days.find((day) => day.id === selectedDayId) ??
@@ -60,7 +68,14 @@ const DoctorCalendarContainer = () => {
           زمان مورد نظر را انتخاب کنید
         </Typography>
 
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <Button startIcon={<ArrowForwardIcon />} sx={{ fontSize: 24 }}>
             ماه قبل
           </Button>
@@ -74,12 +89,28 @@ const DoctorCalendarContainer = () => {
       </Stack>
 
       <Box sx={{ bgcolor: "#EEF3F8", px: { xs: 1.5, md: 2 }, py: 3 }}>
-        <Stack direction="row" alignItems="center" gap={1}>
+        <Stack
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
           <IconButton>
             <ArrowForwardIcon />
           </IconButton>
 
-          <Stack direction="row" gap={1.5} sx={{ overflowX: "auto", flex: 1, pb: 0.5 }}>
+          <Stack
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 1.5,
+              overflowX: "auto",
+              flex: 1,
+              pb: 0.5,
+            }}
+          >
             {days.map((day) => {
               const isSelected = selectedDay?.id === day.id;
               const isClosed = day.availableSlots.length === 0;
@@ -100,14 +131,34 @@ const DoctorCalendarContainer = () => {
                     textAlign: "center",
                   }}
                 >
-                  <Typography sx={{ fontWeight: 600, color: isClosed ? "error.light" : "text.primary" }}>
+                  <Typography
+                    sx={{
+                      fontWeight: 600,
+                      color: isClosed ? "error.light" : "text.primary",
+                    }}
+                  >
                     {day.weekdayName}
                   </Typography>
-                  <Typography sx={{ mt: 1, fontWeight: 700, fontSize: 34, color: isClosed ? "error.light" : "primary.main" }}>
+                  <Typography
+                    sx={{
+                      mt: 1,
+                      fontWeight: 700,
+                      fontSize: 34,
+                      color: isClosed ? "error.light" : "primary.main",
+                    }}
+                  >
                     {toPersianNumber(day.dayOfMonth)}
                   </Typography>
-                  <Typography sx={{ mt: 1, color: isClosed ? "error.light" : "text.secondary", fontSize: 20 }}>
-                    {isClosed ? "روز غیر کاری" : `${toPersianNumber(day.availableSlots.length)} نوبت خالی`}
+                  <Typography
+                    sx={{
+                      mt: 1,
+                      color: isClosed ? "error.light" : "text.secondary",
+                      fontSize: 20,
+                    }}
+                  >
+                    {isClosed
+                      ? "روز غیر کاری"
+                      : `${toPersianNumber(day.availableSlots.length)} نوبت خالی`}
                   </Typography>
                 </Card>
               );
@@ -119,14 +170,28 @@ const DoctorCalendarContainer = () => {
           </IconButton>
         </Stack>
 
-        <Stack alignItems="center" sx={{ mt: 3 }}>
-          <Button variant="outlined" sx={{ px: 4, py: 1, borderRadius: 2, fontSize: 30 }}>
-            {firstFreeSlot ? `اولین نوبت خالی: ${normalizeTimeLabel(firstFreeSlot)}` : "اولین نوبت خالی"}
+        <Stack sx={{ alignItems: "center", mt: 3 }}>
+          <Button
+            variant="outlined"
+            sx={{ px: 4, py: 1, borderRadius: 2, fontSize: 30 }}
+          >
+            {firstFreeSlot
+              ? `اولین نوبت خالی: ${normalizeTimeLabel(firstFreeSlot)}`
+              : "اولین نوبت خالی"}
           </Button>
         </Stack>
       </Box>
 
-      <Stack direction="row" flexWrap="wrap" gap={1.5} sx={{ p: 2.5, justifyContent: "center" }}>
+      <Stack
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: 1.5,
+          p: 2.5,
+          justifyContent: "center",
+        }}
+      >
         {selectedDay.availableSlots.map((time) => (
           <Chip
             key={time}

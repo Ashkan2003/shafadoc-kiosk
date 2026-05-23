@@ -1,33 +1,38 @@
-import {
-  Container,
-  CircularProgress,
-  Alert,
-  Box,
-  Typography,
-  Stack,
-} from "@mui/material";
+import { Container, Box, Typography, Stack } from "@mui/material";
 import { useGetCenterDoctorsQuery } from "../service/query";
 import DoctorCard from "./DoctorCard";
 import { useNavigate } from "react-router-dom";
 import { Routes } from "@renderer/lib/routes";
-import { useAppSelector } from "@renderer/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@renderer/lib/redux/hooks";
+import {
+  setDoctorId,
+  setStep,
+} from "@renderer/lib/redux/slices/reservationSlice";
 import FullPageSpinner from "@renderer/components/fullPageSpinner";
 import CustomError from "@renderer/components/customError";
+import { useEffect } from "react";
 
 export default function DoctorsContainer() {
-  const settings = useAppSelector((state) => state.settings.data);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const settings = useAppSelector((state) => state.settings.data);
+
   const {
     data: doctors,
     isLoading: isLoadingDoctors,
     error,
   } = useGetCenterDoctorsQuery(settings?.centerId);
 
-  console.log(doctors, "ooooooooooo");
-  const handleBookAppointment = (doctorId: string) => {
-    navigate(`${Routes.DOCTOR_CALENDAR}/${doctorId}`);
+  // Always at step 1 when this page mounts
+  useEffect(() => {
+    dispatch(setStep(1));
+    dispatch(setDoctorId(null));
+  }, [dispatch]);
 
-    console.log("Book appointment for doctor:", doctorId);
+  const handleBookAppointment = (doctorId: string) => {
+    dispatch(setDoctorId(doctorId));
+    dispatch(setStep(2));
+    navigate(`${Routes.DOCTOR_CALENDAR}/${doctorId}`);
   };
 
   if (isLoadingDoctors) {
@@ -35,21 +40,23 @@ export default function DoctorsContainer() {
   }
 
   if (error) {
-    return <CustomError title="شناسه مرکز یافت نشد" />;
+    return <CustomError title="خطا در دریافت اطلاعات پزشکان" />;
   }
+
   if (!settings?.centerId) {
     return <CustomError title="شناسه مرکز یافت نشد" />;
   }
 
   if (!doctors || doctors.length === 0) {
-    return <CustomError title=" هیچ پزشکی برای این مرکز یافت نشد" />;
+    return <CustomError title="هیچ پزشکی برای این مرکز یافت نشد" />;
   }
 
   return (
-    <Stack>
-      <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+    <Stack sx={{ gap: 2 }}>
+      <Typography variant="h5" sx={{ fontWeight: 700 }}>
         پزشکان مرکز
       </Typography>
+
       {doctors.map((doctor) => (
         <DoctorCard
           key={doctor.id}

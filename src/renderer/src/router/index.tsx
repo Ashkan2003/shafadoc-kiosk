@@ -1,13 +1,12 @@
 import MainLayout from "@renderer/layouts/mainLayout";
+import StepperLayout from "@renderer/layouts/stepperLayout";
 import { Routes } from "@renderer/lib/routes";
 import CenterDoctors from "@renderer/pages/doctorsPage";
 import HomePage from "@renderer/pages/home";
 import SettingsPage from "@renderer/pages/settings";
 import NotFoundPage from "@renderer/pages/notFound";
-import ErrorBoundary from "@renderer/lib/providers/ErrorBoundary";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import RouteErrorPage from "@renderer/lib/providers/ErrorBoundary/RouteErrorPage";
-import DoctorCalendar from "@renderer/pages/doctorCalendarPage";
 import DoctorCalendarPage from "@renderer/pages/doctorCalendarPage";
 
 const router = createHashRouter([
@@ -15,7 +14,6 @@ const router = createHashRouter([
     path: "/",
     element: <MainLayout />,
     errorElement: <RouteErrorPage />,
-
     children: [
       {
         index: true,
@@ -25,14 +23,22 @@ const router = createHashRouter([
         path: Routes.SETTINGS,
         element: <SettingsPage />,
       },
+
+      // ── Reservation flow — wrapped in StepperLayout ──
       {
-        path: Routes.CENTER_DOCTORS,
-        element: <CenterDoctors />,
+        element: <StepperLayout />,
+        children: [
+          {
+            path: Routes.CENTER_DOCTORS,
+            element: <CenterDoctors />,
+          },
+          {
+            path: `${Routes.DOCTOR_CALENDAR}/:id`,
+            element: <DoctorCalendarPage />,
+          },
+        ],
       },
-      {
-        path: `${Routes.DOCTOR_CALENDAR}/:id`,
-        element: <DoctorCalendarPage />,
-      },
+
       {
         path: "*",
         element: <NotFoundPage />,
