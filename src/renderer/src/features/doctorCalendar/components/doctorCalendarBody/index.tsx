@@ -78,7 +78,7 @@ const CalendarBody = ({ calendarData, onScrollToTimes }: CalendarBodyProps) => {
   }, [firstEmptyDate, handleSelect, selectedAppointmentDetail.selectedDay]);
   // this is for auto scroll carousel to the first empty date in the page initial rendering
   useEffect(() => {
-    const gregorianDate = new Date(selectedAppointmentDetail?.selectedDay!);
+    const gregorianDate = new Date(selectedAppointmentDetail.selectedDay!);
     goToSelectedDaySlide(gregorianDate, carouselRef, daysInMonth);
   }, [daysInMonth, firstEmptyDate, selectedAppointmentDetail.selectedDay]);
 
@@ -136,7 +136,6 @@ const CalendarBody = ({ calendarData, onScrollToTimes }: CalendarBodyProps) => {
             const isActive = !isFullyBooked && isAvailable;
             return (
               <Box
-                variant="outlined"
                 key={day.toISOString()}
                 onClick={() => {
                   if (isActive && emptyCount > 0) {
