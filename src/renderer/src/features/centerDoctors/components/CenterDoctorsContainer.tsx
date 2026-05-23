@@ -5,12 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { Routes } from "@renderer/lib/routes";
 import { useAppDispatch, useAppSelector } from "@renderer/lib/redux/hooks";
 import {
-  setDoctorId,
+  setSelectedDoctor,
   setStep,
 } from "@renderer/lib/redux/slices/reservationSlice";
 import FullPageSpinner from "@renderer/components/fullPageSpinner";
 import CustomError from "@renderer/components/customError";
 import { useEffect } from "react";
+import { DoctorType } from "src/shared/types/common";
 
 export default function DoctorsContainer() {
   const dispatch = useAppDispatch();
@@ -26,13 +27,13 @@ export default function DoctorsContainer() {
   // Always at step 1 when this page mounts
   useEffect(() => {
     dispatch(setStep(1));
-    dispatch(setDoctorId(null));
   }, [dispatch]);
 
-  const handleBookAppointment = (doctorId: string) => {
-    dispatch(setDoctorId(doctorId));
+  const handleBookAppointment = (doctor: DoctorType) => {
+    dispatch(setSelectedDoctor(doctor));
+
     dispatch(setStep(2));
-    navigate(`${Routes.DOCTOR_CALENDAR}/${doctorId}`);
+    navigate(`${Routes.DOCTOR_CALENDAR}/${doctor.id}`);
   };
 
   if (isLoadingDoctors) {
@@ -61,7 +62,7 @@ export default function DoctorsContainer() {
         <DoctorCard
           key={doctor.id}
           doctor={doctor}
-          onBookAppointment={() => handleBookAppointment(doctor.id)}
+          onBookAppointment={() => handleBookAppointment(doctor)}
           hasAppointment={doctor.is_recommended || false}
         />
       ))}

@@ -127,3 +127,62 @@ export interface AppointmentTimeStatusType {
   pending_count: number;
   is_available: boolean;
 }
+
+export interface CombinedAppointmentsByDateType {
+  date: string;
+  combinedTimeStatus: AppointmentTimeStatusType[];
+  totalReservationStatus: AppointmentReservationStatsType;
+}
+
+export interface CalendarAppointmentType {
+  id: string;
+  center_id: string;
+  doctor_id: string;
+  service_id: string;
+  date: string; // ISO date string, e.g. "2025-11-26"
+  start_time: string; // "HH:mm"
+  end_time: string; // "HH:mm"
+  status: number;
+  split_times: string;
+  service_type: string;
+  description: string | null;
+  reserve_types: string;
+  times: string;
+  created_at: string; // ISO datetime
+  updated_at: string; // ISO datetime
+  start_date: string;
+  end_date: string;
+  service_info: AppointmentServiceInfoType;
+  reservation_stats: AppointmentReservationStatsType;
+  times_status: AppointmentTimeStatusType[];
+}
+
+///////////////////////user-types//////////////////
+export interface InsuranceType {
+  id: string;
+  name: string;
+  code: string;
+  description: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+export interface AuthUser {
+  id: string;
+  user_id?: string;
+  first_name?: string;
+  last_name?: string;
+  full_name?: string;
+  father_name?: string;
+  parent?: string;
+  parent_id?: string | null;
+  national_code?: string;
+  mobile?: string;
+  birth_date?: string;
+  insurance_id?: string;
+  insurance_no?: string;
+  insurance: InsuranceType;
+  gender?: string;
+  created_at?: string;
+  updated_at?: string;
+}

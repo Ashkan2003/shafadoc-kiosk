@@ -1,7 +1,12 @@
 import CustomError from "@renderer/components/customError";
 import FullPageSpinner from "@renderer/components/fullPageSpinner";
 import { useAppDispatch, useAppSelector } from "@renderer/lib/redux/hooks";
-import { setStep } from "@renderer/lib/redux/slices/reservationSlice";
+import {
+  setCalendarData,
+  setInitialAppointments,
+  setSelectedAppointmentDetail,
+  setStep,
+} from "@renderer/lib/redux/slices/reservationSlice";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import {
@@ -15,16 +20,13 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCenterDoctorAppointmentQuery } from "../../service/query";
-import {
-  extractCalendarDays,
-  getFirstAvailableSlot,
-  getMonthLabel,
-  normalizeTimeLabel,
-  toPersianNumber,
-} from "../../utils/calendarUi";
+import { getCombinedAppointmentsByDate } from "../../utils/calendarUi";
+import { useCalendar } from "../../hooks/useCalendar";
+import { CalendarBody } from "../doctorCalendarBody";
+import { CalendarFooter } from "../doctorCalendarFooter";
 
 const DoctorCalendarContainer = () => {
   const theme = useTheme();
@@ -38,31 +40,64 @@ const DoctorCalendarContainer = () => {
     centerId: settings?.centerId,
   });
 
-  const days = useMemo(() => extractCalendarDays(data), [data]);
-  const [selectedDayId, setSelectedDayId] = useState<string | null>(null);
-
-  // Always at step 2 when this page mounts
   useEffect(() => {
     dispatch(setStep(2));
   }, [dispatch]);
 
-  const selectedDay =
-    days.find((day) => day.id === selectedDayId) ??
-    days.find((day) => day.availableSlots.length > 0) ??
-    days[0];
+  // if (isLoading) {
+  //   return <FullPageSpinner />;
+  // }
 
-  const firstFreeSlot = selectedDay ? getFirstAvailableSlot(selectedDay) : null;
+  // if (error || !settings?.centerId) {
+  //   return <CustomError title="شناسه مرکز یافت نشد" />;
+  // }
 
+  const combinedAppointmentsByDate = getCombinedAppointmentsByDate(data);
+  console.log(data, "calendarAppointments");
+  console.log(combinedAppointmentsByDate, "combinedAppointmentsByDate");
+  const [isInitialized, setIsInitialized] = useState(false);
+  useEffect(() => {
+    // if you only want to init once:
+    if (isInitialized || isLoading) return; // i done this for fixing the redux-state going back to initial state issue
+    dispatch(setInitialAppointments(data.appointments));
+    dispatch(setCalendarData(combinedAppointmentsByDate));
+    //
+    dispatch(
+      setSelectedAppointmentDetail({
+        selectedAppointment: null,
+        selectedDay: null,
+        selectedDayTimes: null,
+        selectedService: null,
+        selectedTime: null,
+        timeFrame: {
+          start_time: null,
+          end_time: null,
+        },
+      }),
+    );
+    setIsInitialized(true); // only after all dispatches
+  }, [data, combinedAppointmentsByDate, dispatch, isInitialized, isLoading]);
+
+  const {
+    setCurrMonth,
+    currMonth,
+    daysInMonth,
+    isSameMonth,
+    getNextMonth,
+    getPrevMonth,
+    firstEmptyDate,
+  } = useCalendar({ calendardata: combinedAppointmentsByDate });
+  const targetRef = useRef<HTMLDivElement | null>(null);
+  const onScrollToTimes = () => {
+    targetRef.current?.scrollIntoView({
+      behavior: "smooth",
+
+      block: "nearest",
+      inline: "end",
+    });
+  };
   if (isLoading) {
     return <FullPageSpinner />;
-  }
-
-  if (error || !settings?.centerId) {
-    return <CustomError title="شناسه مرکز یافت نشد" />;
-  }
-
-  if (days.length === 0) {
-    return <CustomError title="زمانی برای این پزشک پیدا نشد" />;
   }
 
   return (
@@ -85,6 +120,7 @@ const DoctorCalendarContainer = () => {
           : `0 4px 24px ${alpha(theme.palette.primary.main, 0.08)}`,
       }}
     >
+      {/* header */}
       <Stack sx={{ p: { xs: 2, md: 3 }, gap: 2.5 }}>
         <Stack
           sx={{
@@ -98,150 +134,32 @@ const DoctorCalendarContainer = () => {
             color="warning"
             startIcon={<ArrowForwardIcon />}
             sx={{ fontSize: 24 }}
+            onClick={(e) => getPrevMonth(e)}
+            disabled={isSameMonth}
           >
             ماه قبل
           </Button>
           <Typography sx={{ fontWeight: 700, fontSize: 32 }}>
-            {getMonthLabel(days[0].date)}
+            {currMonth}
           </Typography>
           <Button
             color="warning"
             endIcon={<ArrowBackIcon />}
             sx={{ fontSize: 24 }}
+            onClick={(e) => getNextMonth(e)}
           >
             ماه بعد
           </Button>
         </Stack>
       </Stack>
+      <CalendarBody
+        daysInMonth={daysInMonth}
+        setCurrMonth={setCurrMonth}
+        onScrollToTimes={onScrollToTimes}
+        defaultDate={firstEmptyDate}
+      />
 
-      <Box
-        sx={{
-          // bgcolor: "background.default",
-          // backdropFilter: "blur(1px)",
-          px: { xs: 1.5, md: 2 },
-          py: 3,
-        }}
-      >
-        <Stack
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <IconButton>
-            <ArrowForwardIcon />
-          </IconButton>
-
-          <Stack
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              gap: 1.5,
-              overflowX: "auto",
-              flex: 1,
-              pb: 0.5,
-            }}
-          >
-            {days.map((day) => {
-              const isSelected = selectedDay?.id === day.id;
-              const isClosed = day.availableSlots.length === 0;
-
-              return (
-                <Card
-                  key={day.id}
-                  onClick={() => setSelectedDayId(day.id)}
-                  sx={{
-                    minWidth: 150,
-                    px: 2,
-                    py: 2,
-                    borderRadius: 3,
-                    border: "1px solid",
-                    borderColor: isSelected ? "warning.light" : "info.main",
-                    bgcolor: isSelected ? "#012ef484" : "background.paper",
-                    cursor: "pointer",
-                    textAlign: "center",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontWeight: 600,
-                      color: isClosed ? "error.light" : "text.primary",
-                    }}
-                  >
-                    {day.weekdayName}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      mt: 1,
-                      fontWeight: 700,
-                      fontSize: 34,
-                      color: isClosed ? "error.light" : "background",
-                    }}
-                  >
-                    {toPersianNumber(day.dayOfMonth)}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      mt: 1,
-                      color: isClosed ? "error.light" : "text.secondary",
-                      fontSize: 20,
-                    }}
-                  >
-                    {isClosed
-                      ? "روز غیر کاری"
-                      : `${toPersianNumber(day.availableSlots.length)} نوبت خالی`}
-                  </Typography>
-                </Card>
-              );
-            })}
-          </Stack>
-
-          <IconButton>
-            <ArrowBackIcon />
-          </IconButton>
-        </Stack>
-
-        <Stack sx={{ alignItems: "center", mt: 3 }}>
-          <Button
-            variant="outlined"
-            color="info"
-            sx={{ px: 4, py: 1, borderRadius: 2, fontSize: 30 }}
-          >
-            {firstFreeSlot
-              ? `اولین نوبت خالی: ${normalizeTimeLabel(firstFreeSlot)}`
-              : "اولین نوبت خالی"}
-          </Button>
-        </Stack>
-      </Box>
-
-      <Stack
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          flexWrap: "wrap",
-          gap: 1.5,
-          p: 2.5,
-          justifyContent: "center",
-        }}
-      >
-        {selectedDay.availableSlots.map((time) => (
-          <Chip
-            key={time}
-            label={normalizeTimeLabel(time)}
-            sx={{
-              minWidth: 110,
-              py: 2.5,
-              fontSize: 28,
-              borderRadius: 999,
-              border: "1px solid #00C45A",
-              color: "#00B050",
-              bgcolor: "transparent",
-            }}
-          />
-        ))}
-      </Stack>
+      <CalendarFooter targetRef={targetRef} />
     </Card>
   );
 };
