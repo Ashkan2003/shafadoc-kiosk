@@ -5,6 +5,7 @@ import { setStep } from "@renderer/lib/redux/slices/reservationSlice";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import {
+  alpha,
   Box,
   Button,
   Card,
@@ -12,6 +13,7 @@ import {
   IconButton,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -25,10 +27,12 @@ import {
 } from "../../utils/calendarUi";
 
 const DoctorCalendarContainer = () => {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const settings = useAppSelector((state) => state.settings.data);
-
   const { data, isLoading, error } = useCenterDoctorAppointmentQuery({
     doctorId: id,
     centerId: settings?.centerId,
@@ -62,12 +66,26 @@ const DoctorCalendarContainer = () => {
   }
 
   return (
-    <Card sx={{ borderRadius: 4, overflow: "hidden", p: 0 }}>
+    <Card
+      sx={{
+        borderRadius: 4,
+        border: "1px solid",
+        borderColor: "divider",
+        overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        background: isDark
+          ? `linear-gradient(135deg,
+                    ${alpha(theme.palette.primary.dark, 0.22)},
+                    ${alpha(theme.palette.background.paper, 0.9)})`
+          : `linear-gradient(135deg,
+                    ${alpha(theme.palette.primary.light, 0.15)},
+                    ${alpha(theme.palette.background.paper, 1)})`,
+        boxShadow: isDark
+          ? `0 4px 24px ${alpha(theme.palette.common.black, 0.3)}`
+          : `0 4px 24px ${alpha(theme.palette.primary.main, 0.08)}`,
+      }}
+    >
       <Stack sx={{ p: { xs: 2, md: 3 }, gap: 2.5 }}>
-        <Typography sx={{ fontWeight: 700, fontSize: 32, textAlign: "right" }}>
-          زمان مورد نظر را انتخاب کنید
-        </Typography>
-
         <Stack
           sx={{
             display: "flex",
@@ -76,19 +94,34 @@ const DoctorCalendarContainer = () => {
             justifyContent: "space-between",
           }}
         >
-          <Button startIcon={<ArrowForwardIcon />} sx={{ fontSize: 24 }}>
+          <Button
+            color="warning"
+            startIcon={<ArrowForwardIcon />}
+            sx={{ fontSize: 24 }}
+          >
             ماه قبل
           </Button>
-          <Typography sx={{ fontWeight: 700, fontSize: 42 }}>
+          <Typography sx={{ fontWeight: 700, fontSize: 32 }}>
             {getMonthLabel(days[0].date)}
           </Typography>
-          <Button endIcon={<ArrowBackIcon />} sx={{ fontSize: 24 }}>
+          <Button
+            color="warning"
+            endIcon={<ArrowBackIcon />}
+            sx={{ fontSize: 24 }}
+          >
             ماه بعد
           </Button>
         </Stack>
       </Stack>
 
-      <Box sx={{ bgcolor: "#EEF3F8", px: { xs: 1.5, md: 2 }, py: 3 }}>
+      <Box
+        sx={{
+          // bgcolor: "background.default",
+          // backdropFilter: "blur(1px)",
+          px: { xs: 1.5, md: 2 },
+          py: 3,
+        }}
+      >
         <Stack
           sx={{
             display: "flex",
@@ -125,8 +158,8 @@ const DoctorCalendarContainer = () => {
                     py: 2,
                     borderRadius: 3,
                     border: "1px solid",
-                    borderColor: isSelected ? "primary.main" : "#D8E1EA",
-                    bgcolor: isSelected ? "#F7FBFF" : "background.paper",
+                    borderColor: isSelected ? "warning.light" : "info.main",
+                    bgcolor: isSelected ? "#012ef484" : "background.paper",
                     cursor: "pointer",
                     textAlign: "center",
                   }}
@@ -144,7 +177,7 @@ const DoctorCalendarContainer = () => {
                       mt: 1,
                       fontWeight: 700,
                       fontSize: 34,
-                      color: isClosed ? "error.light" : "primary.main",
+                      color: isClosed ? "error.light" : "background",
                     }}
                   >
                     {toPersianNumber(day.dayOfMonth)}
@@ -173,6 +206,7 @@ const DoctorCalendarContainer = () => {
         <Stack sx={{ alignItems: "center", mt: 3 }}>
           <Button
             variant="outlined"
+            color="info"
             sx={{ px: 4, py: 1, borderRadius: 2, fontSize: 30 }}
           >
             {firstFreeSlot

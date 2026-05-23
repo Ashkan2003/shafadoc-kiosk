@@ -8,3 +8,69 @@
 body {
   font-family: "IRANSans", sans-serif;
 }
+
+/* ------------ styling scrollBar-scroll---------------- */
+:root {
+  --scrollbar-thumb: #6b7280; /* thumb color */
+  --scrollbar-thumb-hover: #4b5563; /* thumb hover */
+  --scrollbar-size: 10px; /* thickness */
+  --scrollbar-radius: 8px;
+}
+
+/* ============ GLOBAL (all scrollable elements) ============ */
+/* WebKit (Chrome / Edge / Safari) */
+*::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+/* make the track fully transparent */
+*::-webkit-scrollbar-track {
+  background: transparent; /* no visible track behind the thumb */
+}
+
+/* style the thumb (visible) */
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: var(--scrollbar-radius);
+  border: 2px solid transparent; /* creates spacing so it looks "floating" */
+  background-clip: padding-box;
+}
+
+/* hover state */
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+/* corner */
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ============ Firefox ============ */
+/* Firefox uses scrollbar-color: <thumb> <track>. Set track to transparent */
+* {
+  scrollbar-width: thin; /* or 'auto' */
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* ============ Scoped variant (use class="custom-scrollbar" on containers) ============ */
+/* If you prefer not to apply globally, use the .custom-scrollbar selector instead of * */
+.custom-scrollbar::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: var(--scrollbar-radius);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+/* ------------ styling scrollBar-scroll---------end------- */
