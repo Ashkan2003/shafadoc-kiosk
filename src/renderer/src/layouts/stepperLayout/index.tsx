@@ -34,12 +34,48 @@ const RESERVATION_STEPS: ReservationStep[] = [
   },
 ];
 
+/**
+ * Resolves the route to navigate to when the user lands ON a given step.
+ *
+ * Some steps have dynamic route params (e.g. doctor ID), so this is a
+ * function rather than a static map.
+ *
+ * To add more steps in the future:
+ *  1. Push a new entry to RESERVATION_STEPS above.
+ *  2. Add a `case` here returning its route (static or dynamic).
+ */
+function getRouteForStep(
+  step: number,
+  ctx: { doctorId: string | null | undefined },
+): string | null {
+  switch (step) {
+    case 1:
+      return Routes.CENTER_DOCTORS;
+
+    case 2:
+      // DOCTOR_CALENDAR route is registered as /doctorCalendar/:id
+      // so we must append the doctor id — navigating to the base path gives 404
+      return ctx.doctorId
+        ? `${Routes.DOCTOR_CALENDAR}/${ctx.doctorId}`
+        : Routes.CENTER_DOCTORS; // safety: if somehow doctor id is missing, fall back to step 1
+
+    case 3:
+      return Routes.REVIEW;
+
+    default:
+      return null;
+  }
+}
+
 export default function StepperLayout(): JSX.Element {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const currentStep = useAppSelector((state) => state.reservation.step);
+  const selectedDoctorId = useAppSelector(
+    (state) => state.reservation.selectedDoctor?.id,
+  );
 
   // MUI Stepper is 0-indexed; our step state is 1-indexed
   const activeStep = currentStep - 1;
@@ -47,14 +83,27 @@ export default function StepperLayout(): JSX.Element {
   const isDark = theme.palette.mode === "dark";
 
   const handleBack = () => {
-    if (currentStep > 1) {
-      const prevStep = currentStep - 1;
-      dispatch(setStep(prevStep));
+    if (currentStep <= 1) {
+      // Already on the first step — reset everything and go home
+      dispatch(resetReservation());
+      navigate(Routes.HOME);
+      return;
+    }
 
-      if (prevStep === 1) {
-        navigate(Routes.CENTER_DOCTORS);
-      }
+    const prevStep = currentStep - 1;
+    dispatch(setStep(prevStep));
+
+    const targetRoute = getRouteForStep(prevStep, {
+      doctorId: selectedDoctorId,
+    });
+
+    if (targetRoute) {
+      navigate(targetRoute);
     } else {
+      // Fallback safety net: should never happen if all cases are handled above
+      console.warn(
+        `No route defined for step ${prevStep}. Falling back to home.`,
+      );
       dispatch(resetReservation());
       navigate(Routes.HOME);
     }
