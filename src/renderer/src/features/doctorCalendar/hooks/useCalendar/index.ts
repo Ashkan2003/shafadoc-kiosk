@@ -1,5 +1,6 @@
+// src/renderer/src/features/doctorCalendar/hooks/useCalendar/index.ts
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import {
   add,
   eachDayOfInterval,
@@ -18,14 +19,15 @@ export function useCalendar({
   calendarData: CombinedAppointmentsByDateType[] | null;
 }) {
   const today = startOfToday();
-  const { numDate } = getFirstEmptyAppointment({
-    appointments: calendarData,
-  });
+  const { numDate } = getFirstEmptyAppointment({ appointments: calendarData });
+
+  // BUG FIX: guard against null numDate — new Date(null) → epoch (Jan 1 1970)
+  const safeInitialDate = numDate ? new Date(numDate) : today;
+
   const [currMonth, setCurrMonth] = useState(() =>
-    format(new Date(numDate!), "MMMM-yyyy"),
+    format(safeInitialDate, "MMMM-yyyy"),
   );
 
-  // Dynamically calculate first day of the current month
   const firstDayOfMonth = useMemo(
     () => parse(currMonth, "MMMM-yyyy", new Date()),
     [currMonth],
@@ -77,6 +79,14 @@ export function useCalendar({
       ),
     );
   };
+
+  // Memoized so CalendarBody's useEffect deps don't fire on every render
+  const firstEmptyDate = useMemo(
+    () => (numDate ? new Date(numDate) : today),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [numDate],
+  );
+
   return {
     goNextMonth,
     currMonth,
@@ -85,8 +95,6 @@ export function useCalendar({
     getPrevMonth,
     setCurrMonth,
     getNextMonth,
-
-    // @ts-ignore
-    firstEmptyDate: new Date(numDate),
+    firstEmptyDate,
   };
 }

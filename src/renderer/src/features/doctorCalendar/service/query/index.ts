@@ -15,7 +15,7 @@ export function useCenterDoctorAppointmentQuery({
         centerId: centerId!,
         doctorId: doctorId!,
       }),
-    refetchInterval: 1000 * 10, // 10 second
+    // refetchInterval: 1000 * 10, // 10 second
     queryKey: ["doctor-appointments", centerId, doctorId],
     onError(error: any) {
       toast.error("در در یافت نوبت های پزشک مورد نظر خطایی رخ داد", {
