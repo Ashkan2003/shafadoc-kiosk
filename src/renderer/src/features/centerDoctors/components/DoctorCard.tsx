@@ -46,9 +46,16 @@ function DoctorCard({ doctor, onBookAppointment }: DoctorCardProps) {
       }}
     >
       <CardContent>
-        <Grid container spacing={2} alignItems="flex-start">
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            alignItems: "flex-start",
+          }}
+        >
           {/* Profile Picture and Basic Info */}
-          <Grid item xs={12} sm="auto">
+          {/* Profile Picture and Basic Info */}
+          <Grid size={{ xs: 12, sm: "auto" }}>
             <Avatar
               src={doctor.profile_picture || ""}
               alt={doctor.full_name}
@@ -59,11 +66,16 @@ function DoctorCard({ doctor, onBookAppointment }: DoctorCardProps) {
               }}
             />
           </Grid>
-
-          <Grid item xs={12} sm="auto" sx={{ flex: 1 }}>
+          <Grid
+            size={{ xs: 12, sm: "auto" }}
+            sx={{
+              flex: 1,
+            }}
+          >
             <Typography variant="h6" sx={{ fontWeight: "bold", mb: 0.5 }}>
               دکتر {doctor.full_name}
             </Typography>
+
             {specialityLabel && (
               <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
                 {specialityLabel}
@@ -73,9 +85,15 @@ function DoctorCard({ doctor, onBookAppointment }: DoctorCardProps) {
             {/* Rating */}
             {doctor.is_recommended && (
               <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  mb: 1,
+                }}
               >
                 <StarIcon sx={{ color: "#FFC107", fontSize: "1.25rem" }} />
+
                 <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                   توصیه شده
                 </Typography>
@@ -88,27 +106,47 @@ function DoctorCard({ doctor, onBookAppointment }: DoctorCardProps) {
         {proficiencyAreas.length > 0 && (
           <>
             <Divider sx={{ my: 2 }} />
+
             <Box sx={{ mb: 2 }}>
               <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  mb: 1,
+                }}
               >
                 <MedicalServicesIcon
-                  sx={{ color: "#2196F3", fontSize: "1.125rem" }}
+                  sx={{
+                    color: "#2196F3",
+                    fontSize: "1.125rem",
+                  }}
                 />
+
                 <Typography variant="caption" color="textSecondary">
                   حوزه های تخصص
                 </Typography>
               </Box>
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 1,
+                }}
+              >
                 {/* {proficiencyAreas?.map((area, index) => (
-                  <Chip
-                    key={index}
-                    label={area}
-                    size="small"
-                    variant="outlined"
-                    sx={{ borderColor: "#2196F3", color: "#2196F3" }}
-                  />
-                ))} */}
+            <Chip
+              key={index}
+              label={area}
+              size="small"
+              variant="outlined"
+              sx={{
+                borderColor: "#2196F3",
+                color: "#2196F3",
+              }}
+            />
+          ))} */}
               </Box>
             </Box>
           </>
@@ -116,10 +154,21 @@ function DoctorCard({ doctor, onBookAppointment }: DoctorCardProps) {
 
         {/* Proficiency */}
         {doctor.proficiency?.label && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              mb: 2,
+            }}
+          >
             <LocalHospitalIcon
-              sx={{ color: "#FFC107", fontSize: "1.125rem" }}
+              sx={{
+                color: "#FFC107",
+                fontSize: "1.125rem",
+              }}
             />
+
             <Typography variant="caption" color="textSecondary">
               فوق تخصص: {doctor.proficiency.label}
             </Typography>
@@ -129,15 +178,32 @@ function DoctorCard({ doctor, onBookAppointment }: DoctorCardProps) {
         <Divider sx={{ my: 2 }} />
 
         {/* Next Appointment */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-          <AccessTimeIcon sx={{ color: "#2196F3", fontSize: "1.125rem" }} />
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            mb: 2,
+          }}
+        >
+          <AccessTimeIcon
+            sx={{
+              color: "#2196F3",
+              fontSize: "1.125rem",
+            }}
+          />
+
           <Typography variant="caption" color="textSecondary">
             اولین نوبت خالی پزشک:
           </Typography>
+
           <Typography
             variant="body2"
-            sx={{ color: "#1976D2", fontWeight: "500" }}
-          ></Typography>
+            sx={{
+              color: "#1976D2",
+              fontWeight: 500,
+            }}
+          />
         </Box>
       </CardContent>
 
